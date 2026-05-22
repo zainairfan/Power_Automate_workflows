@@ -1,0 +1,21 @@
+SET ExitChat TO $'''False'''
+IF ExitChat = $'''False''' THEN
+    Display.InputDialog Title: $'''💬 My AI Chatbot''' Message: $'''Type your question here (or type \'exit\' to quit):''' InputType: Display.InputType.SingleLine IsTopMost: False UserInput=> UserPrompt ButtonPressed=> ButtonPressed
+    IF UserPrompt = $'''exit''' THEN
+        SET ExitChat TO $'''True'''
+    END
+    Web.InvokeWebService.InvokeWebServicePost Url: $'''https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=%ApiKey%''' Accept: $'''application/xml''' ContentType: $'''application/xml''' RequestBody: $'''{
+  \"contents\": [
+    {
+      \"parts\": [
+        {
+          \"text\": \"%UserPrompt%\"
+        }
+      ]
+    }
+  ]
+}''' ConnectionTimeout: 30 FollowRedirection: True ClearCookies: False FailOnErrorStatus: False EncodeRequestBody: False UserAgent: $'''Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.21) Gecko/20100312 Firefox/3.6''' Encoding: Web.Encoding.AutoDetect AcceptUntrustedCertificates: False TrimRequestBody: True ResponseHeaders=> WebServiceResponseHeaders Response=> WebServiceResponse StatusCode=> StatusCode
+    Variables.ConvertJsonToCustomObject Json: WebServiceResponse CustomObject=> JsonAsCustomObject
+    SET BotResponse TO JsonAsCustomObject['candidates'][0]['content']['parts'][0]['text']
+    Display.ShowMessageDialog.ShowMessage Title: $'''🤖 Gemini Bot Says:''' Message: BotResponse Icon: Display.Icon.None Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: False ButtonPressed=> ButtonPressed2
+END
