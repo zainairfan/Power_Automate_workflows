@@ -1,4 +1,4 @@
-# 📧 Email Classification Automation using Power Automate Desktop + Google Gemini AI
+# 📧 AI Email Classification Automation using Power Automate Desktop + Google Gemini AI
 
 ## 📌 Project Overview
 
