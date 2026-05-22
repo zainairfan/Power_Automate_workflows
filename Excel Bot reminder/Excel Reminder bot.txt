@@ -1,0 +1,23 @@
+LOOP WHILE ($'''True''') = ($'''True''')
+    Excel.LaunchExcel.LaunchAndOpenUnderExistingProcess Path: $'''C:\\Users\\Sameer Traders\\Desktop\\Reminders.xlsx''' Visible: True ReadOnly: True UseMachineLocale: False Instance=> ExcelInstance
+    Excel.ReadFromExcel.ReadCells Instance: ExcelInstance StartColumn: $'''A''' StartRow: 2 EndColumn: $'''B''' EndRow: 4 GetCellContentsMode: Excel.GetCellContentsMode.TypedValues FirstLineIsHeader: False RangeValue=> ExcelData
+    Excel.CloseExcel.Close Instance: ExcelInstance
+    DateTime.GetCurrentDateTime.Local DateTimeFormat: DateTime.DateTimeFormat.DateAndTime CurrentDateTime=> Now
+    Text.ConvertDateTimeToText.FromCustomDateTime DateTime: Now CustomFormat: $'''HH:mm''' Result=> CurrentTime
+    LOOP FOREACH Row IN ExcelData
+        Display.ShowMessageDialog.ShowMessage Title: $'''⏰ TASK REMINDER''' Message: $'''🌟 Hello! Time to take a break.
+
+📅 Scheduled Time: %Row[0]%
+📝 Task: %Row[1]%
+
+✨ Keep up the good work!''' Icon: Display.Icon.None Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: False ButtonPressed=> ButtonPressed2
+        IF Row[0] = CurrentTime THEN
+            Display.ShowMessageDialog.ShowMessage Title: $'''⏰ TASK REMINDER''' Message: $'''🌟 Hello! Time to take a break.
+
+📅 Scheduled Time: %Row[0]%
+📝 Task: %Row[1]%
+
+✨ Keep up the good work!''' Icon: Display.Icon.Information Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: True ButtonPressed=> ButtonPressed
+        END
+    END
+END
